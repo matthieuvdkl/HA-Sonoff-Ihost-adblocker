@@ -71,4 +71,4 @@ Home Assistant quand ce dépôt est mis à jour.
   temporairement les DNS d'origine dans la box.
 
 Guide complet (box Internet, intégration Home Assistant, tableau de bord) :
-<https://github.com/matthieuvdkl/HA-Sonoff-Ihost>
+<https://github.com/matthieuvdkl/HA-Sonoff-Ihost-adblocker>

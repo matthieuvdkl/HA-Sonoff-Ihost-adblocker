@@ -5,7 +5,7 @@ Dépôt d'add-on Home Assistant qui installe **AdGuard Home** sur un
 guide pour configurer la box Internet et piloter le bloqueur depuis
 Home Assistant.
 
-[![Ajouter ce dépôt à Home Assistant](https://my.home-assistant.io/badges/supervisor_add_addon_repository.svg)](https://my.home-assistant.io/redirect/supervisor_add_addon_repository/?repository_url=https%3A%2F%2Fgithub.com%2Fmatthieuvdkl%2FHA-Sonoff-Ihost)
+[![Ajouter ce dépôt à Home Assistant](https://my.home-assistant.io/badges/supervisor_add_addon_repository.svg)](https://my.home-assistant.io/redirect/supervisor_add_addon_repository/?repository_url=https%3A%2F%2Fgithub.com%2Fmatthieuvdkl%2FHA-Sonoff-Ihost-adblocker)
 
 ## Pourquoi ce dépôt ?
 
@@ -57,7 +57,7 @@ pour YouTube.
 1. Cliquez sur le bouton « Ajouter ce dépôt » ci-dessus, ou :
    *Paramètres → Modules complémentaires → Boutique des modules
    complémentaires → ⋮ (en haut à droite) → Dépôts*, puis ajoutez
-   `https://github.com/matthieuvdkl/HA-Sonoff-Ihost`.
+   `https://github.com/matthieuvdkl/HA-Sonoff-Ihost-adblocker`.
 2. Rafraîchissez la boutique : la section « Add-ons Sonoff iHost (ARM 32-bit) »
    apparaît en bas. Ouvrez **AdGuard Home (iHost)** et cliquez sur
    **Installer** (quelques minutes : l'add-on est construit sur l'iHost).

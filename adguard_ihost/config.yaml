@@ -5,7 +5,7 @@ slug: adguard_ihost
 description: >-
   Bloqueur de pubs et de traqueurs pour tout le réseau (DNS),
   compatible Sonoff iHost (ARM 32-bit / armv7).
-url: https://github.com/matthieuvdkl/HA-Sonoff-Ihost
+url: https://github.com/matthieuvdkl/HA-Sonoff-Ihost-adblocker
 arch:
   - armv7
   - aarch64
