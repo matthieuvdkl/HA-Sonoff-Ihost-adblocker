@@ -1,0 +1,34 @@
+---
+name: AdGuard Home (iHost)
+version: "0.107.80"
+slug: adguard_ihost
+description: >-
+  Bloqueur de pubs et de traqueurs pour tout le réseau (DNS),
+  compatible Sonoff iHost (ARM 32-bit / armv7).
+url: https://github.com/matthieuvdkl/HA-Sonoff-Ihost
+arch:
+  - armv7
+  - aarch64
+  - amd64
+startup: services
+boot: auto
+# Réseau de l'hôte : nécessaire pour servir le DNS sur le port 53 de l'iHost,
+# voir la vraie IP de chaque appareil dans les stats, et (option) le DHCP.
+host_network: true
+# NET_RAW : requis uniquement si vous activez le serveur DHCP d'AdGuard Home.
+privileged:
+  - NET_RAW
+# Avec host_network, ces ports sont informatifs : ils ne peuvent pas être
+# remappés. Le port 3000 est imposé par run.sh (--web-addr).
+ports:
+  53/udp: 53
+  3000/tcp: 3000
+ports_description:
+  53/udp: Serveur DNS
+  3000/tcp: Interface web AdGuard Home
+webui: http://[HOST]:[PORT:3000]
+# Journal des requêtes et listes de blocage téléchargées : volumineux et
+# reconstruits automatiquement, inutile de les mettre dans les sauvegardes.
+backup_exclude:
+  - "*/work/data/querylog.json*"
+  - "*/work/data/filters/*"

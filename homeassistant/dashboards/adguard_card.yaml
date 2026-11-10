@@ -1,0 +1,47 @@
+# Carte de tableau de bord AdGuard Home.
+#
+# Tableau de bord > crayon (Modifier) > Ajouter une carte > Manuel,
+# puis coller ce contenu.
+# Les boutons "Pause" utilisent le script du package
+# homeassistant/packages/adguard.yaml.
+type: vertical-stack
+cards:
+  - type: tile
+    entity: switch.adguard_home_protection
+    name: Bloqueur de pubs
+    icon: mdi:shield-check
+    tap_action:
+      action: toggle
+  - type: horizontal-stack
+    cards:
+      - type: button
+        name: Pause 5 min
+        icon: mdi:timer-pause-outline
+        tap_action:
+          action: perform-action
+          perform_action: script.adguard_pause
+          data:
+            minutes: 5
+      - type: button
+        name: Pause 30 min
+        icon: mdi:timer-pause
+        tap_action:
+          action: perform-action
+          perform_action: script.adguard_pause
+          data:
+            minutes: 30
+  - type: glance
+    columns: 3
+    entities:
+      - entity: sensor.adguard_home_dns_queries
+        name: Requêtes
+      - entity: sensor.adguard_home_dns_queries_blocked
+        name: Bloquées
+      - entity: sensor.adguard_home_dns_queries_blocked_ratio
+        name: Taux bloqué
+  - type: history-graph
+    title: Requêtes bloquées (24 h)
+    hours_to_show: 24
+    entities:
+      - entity: sensor.adguard_home_dns_queries_blocked_ratio
+        name: Taux bloqué

@@ -1,0 +1,12 @@
+---
+extends: default
+
+rules:
+  line-length:
+    max: 100
+  # Les fichiers Home Assistant (package, carte) n'ont pas de "---".
+  document-start: disable
+  # Requis par Home Assistant / GitHub Actions : "on:", "to: 'off'"...
+  truthy:
+    allowed-values: ["true", "false"]
+    check-keys: false

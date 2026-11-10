@@ -1,0 +1,113 @@
+# Package Home Assistant pour AdGuard Home.
+#
+# Prérequis : l'intégration "AdGuard Home" est configurée (Paramètres >
+# Appareils et services) et ses entités s'appellent switch.adguard_home_*.
+#
+# Installation :
+#   1. Dans configuration.yaml :
+#        homeassistant:
+#          packages: !include_dir_named packages
+#   2. Copier ce fichier dans /config/packages/adguard.yaml
+#   3. Outils de développement > YAML > Vérifier la configuration, puis
+#      redémarrer Home Assistant.
+
+script:
+  adguard_pause:
+    alias: "AdGuard : pause du bloqueur"
+    description: >-
+      Coupe la protection AdGuard Home pendant quelques minutes (site qui ne
+      marche pas, lien sponsorisé à ouvrir...) puis la réactive.
+    icon: mdi:shield-off-outline
+    # Relancer le script pendant une pause redémarre le compte à rebours.
+    mode: restart
+    fields:
+      minutes:
+        name: Durée
+        description: Durée de la pause, en minutes.
+        default: 5
+        selector:
+          number:
+            min: 1
+            max: 120
+            unit_of_measurement: min
+    sequence:
+      - action: switch.turn_off
+        target:
+          entity_id: switch.adguard_home_protection
+      - delay:
+          minutes: "{{ minutes | default(5) | int }}"
+      - action: switch.turn_on
+        target:
+          entity_id: switch.adguard_home_protection
+
+automation:
+  # Filet de sécurité : si Home Assistant redémarre pendant une pause, le
+  # script s'arrête et la protection resterait coupée.
+  - id: adguard_reactivation_protection
+    alias: "AdGuard : réactiver la protection oubliée"
+    description: >-
+      Réactive la protection si elle est coupée depuis plus de 2 heures
+      (ou 2 heures après un redémarrage de Home Assistant).
+    mode: restart
+    triggers:
+      - trigger: state
+        entity_id: switch.adguard_home_protection
+        to: "off"
+        for:
+          hours: 2
+          minutes: 5
+      # Après un redémarrage, la durée de l'état "off" repart de zéro :
+      # on attend donc explicitement avant de vérifier.
+      - trigger: homeassistant
+        event: start
+        id: demarrage
+    actions:
+      - if:
+          - condition: trigger
+            id: demarrage
+        then:
+          - delay:
+              hours: 2
+              minutes: 5
+      - condition: state
+        entity_id: switch.adguard_home_protection
+        state: "off"
+      - action: switch.turn_on
+        target:
+          entity_id: switch.adguard_home_protection
+      - action: persistent_notification.create
+        data:
+          notification_id: adguard_reactivation
+          title: AdGuard Home
+          message: >-
+            La protection était coupée depuis plus de 2 heures : elle a été
+            réactivée automatiquement.
+
+  # AdGuard Home sert le DNS de tout le réseau : s'il tombe, plus rien ne
+  # résout les noms de domaine.
+  - id: adguard_injoignable
+    alias: "AdGuard : alerte si le serveur DNS ne répond plus"
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: switch.adguard_home_protection
+        to: unavailable
+        for:
+          minutes: 3
+    actions:
+      - action: persistent_notification.create
+        data:
+          notification_id: adguard_injoignable
+          title: AdGuard Home ne répond plus
+          message: >-
+            Le serveur DNS de l'iHost est injoignable : Internet risque de ne
+            plus fonctionner sur le réseau. Vérifiez l'add-on
+            « AdGuard Home (iHost) » (onglet Journal) et redémarrez-le.
+      # Retire l'alerte quand AdGuard Home revient.
+      - wait_for_trigger:
+          - trigger: state
+            entity_id: switch.adguard_home_protection
+            from: unavailable
+      - action: persistent_notification.dismiss
+        data:
+          notification_id: adguard_injoignable
